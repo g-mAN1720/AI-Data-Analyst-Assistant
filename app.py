@@ -72,7 +72,21 @@ if uploaded_file is not None:
             types_df = pd.DataFrame(col_types, columns=["Column Name", "Detected Type"])
 
             st.dataframe(types_df, use_container_width=True)
+# for entire column value 
+            st.subheader("🔍 Column Explorer")
+            selected_col = st.selectbox("Select a column", df.columns)
 
+            col_data = df[[selected_col]]
+            def highlight_issues(val):
+                if pd.isna(val) or val == "":
+                    return "background-color: red; color: white;"
+                return ""
+            styled_df = col_data.style.map(highlight_issues)
+
+            st.dataframe(styled_df, use_container_width=True)   
+            missing_count = col_data[selected_col].isna().sum()
+
+            st.warning(f"⚠️ Missing Values: {missing_count}")
            
             
     except Exception as e:
